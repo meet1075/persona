@@ -32,14 +32,14 @@ export default function ChatModal({ isOpen, onClose, personaName, personaAvatar 
   }
 
   useEffect(() => {
-    if (isOpen && messages.length === 0) {
-      // Add welcome message when modal opens
+    if (isOpen) {
+      // Reset chat history and add a new welcome message when the modal opens or persona changes
       const welcomeMessage: Message = {
         id: Date.now().toString(),
         text: `Hello! I'm ${personaName}. How can I help you today?`,
         isUser: false,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      }
+      };
       setMessages([welcomeMessage])
     }
   }, [isOpen, personaName])
@@ -85,10 +85,11 @@ export default function ChatModal({ isOpen, onClose, personaName, personaAvatar 
       }
 
       const data = await response.json()
-      
+      const aiMessageText = data.message?.trim() || "Sorry, I couldn't understand that."
+
       const aiMessage: Message = {
         id: (Date.now() + 1).toString(),
-        text: data.message,
+        text: aiMessageText,
         isUser: false,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       }
@@ -107,7 +108,7 @@ export default function ChatModal({ isOpen, onClose, personaName, personaAvatar 
     }
   }
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault()
       handleSend()
@@ -136,6 +137,7 @@ export default function ChatModal({ isOpen, onClose, personaName, personaAvatar 
             transition={{ duration: 0.3, ease: "easeOut" }}
           >
             <div className="w-full max-w-2xl h-full max-h-[600px] bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/20 dark:border-gray-700/30 flex flex-col overflow-hidden">
+              
               {/* Header */}
               <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-200/50 dark:border-gray-700/50 bg-white/50 dark:bg-gray-800/50">
                 <div className="flex items-center space-x-3">
@@ -162,6 +164,7 @@ export default function ChatModal({ isOpen, onClose, personaName, personaAvatar 
                 <button
                   onClick={onClose}
                   className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
+                  aria-label="Close chat"
                 >
                   <X className="w-5 h-5 text-gray-500 dark:text-gray-400" />
                 </button>
@@ -190,15 +193,17 @@ export default function ChatModal({ isOpen, onClose, personaName, personaAvatar 
                     type="text"
                     value={inputText}
                     onChange={(e) => setInputText(e.target.value)}
-                    onKeyPress={handleKeyPress}
+                    onKeyDown={handleKeyDown}
                     placeholder="Type your message..."
                     disabled={isLoading}
                     className="flex-1 px-4 py-3 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent disabled:opacity-50 transition-all duration-200"
+                    aria-label="Type your message"
                   />
                   <button
                     onClick={handleSend}
                     disabled={!inputText.trim() || isLoading}
                     className="p-3 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 disabled:from-gray-300 disabled:to-gray-400 dark:disabled:from-gray-600 dark:disabled:to-gray-700 text-white rounded-xl shadow-lg hover:shadow-xl disabled:shadow-none transition-all duration-200 disabled:cursor-not-allowed"
+                    aria-label="Send message"
                   >
                     <Send className="w-5 h-5" />
                   </button>
