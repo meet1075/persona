@@ -1,0 +1,151 @@
+"use client"
+
+import { useState } from "react"
+import { motion } from "framer-motion"
+import PersonaCard from "@/components/PersonaCard"
+import ChatModal from "@/components/ChatModal"
+import ThemeToggle from "@/components/ThemeToggle"
+import { MessageSquare } from "lucide-react"
+
+const personas = [
+  {
+    name: "Hitesh Choudhary",
+    tagline: "Full-stack developer, educator, and YouTube creator. Passionate about teaching web development and making coding accessible to everyone.",
+    avatar: "https://images.pexels.com/photos/3778966/pexels-photo-3778966.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop"
+  },
+  {
+    name: "Piyush Garg",
+    tagline: "Software engineer and tech educator. Expert in modern JavaScript, React, Node.js, and building scalable applications.",
+    avatar: "https://images.pexels.com/photos/2379005/pexels-photo-2379005.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop"
+  }
+]
+
+export default function Home() {
+  const [selectedPersona, setSelectedPersona] = useState<string | null>(null)
+
+  const handlePersonaClick = (personaName: string) => {
+    setSelectedPersona(personaName)
+  }
+
+  const handleCloseModal = () => {
+    setSelectedPersona(null)
+  }
+
+  const selectedPersonaData = personas.find(p => p.name === selectedPersona)
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-orange-50 to-red-50 dark:from-slate-900 dark:via-purple-900 dark:to-indigo-900 transition-colors duration-500">
+      {/* Header */}
+      <motion.header 
+        className="relative z-10 p-6 sm:p-8"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
+        <div className="max-w-6xl mx-auto flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <div className="p-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-lg shadow-lg">
+              <MessageSquare className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
+              Persona Chat
+            </h1>
+          </div>
+          <ThemeToggle />
+        </div>
+      </motion.header>
+
+      {/* Main Content */}
+      <main className="relative z-10 px-6 sm:px-8 pb-12">
+        <div className="max-w-6xl mx-auto">
+          {/* Hero Section */}
+          <motion.div 
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 dark:text-white mb-6 leading-tight">
+              Chat with AI
+              <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent"> Personas</span>
+            </h2>
+            <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto leading-relaxed">
+              Engage in meaningful conversations with AI versions of popular tech educators and developers. 
+              Get insights, ask questions, and learn from their expertise.
+            </p>
+          </motion.div>
+
+          {/* Persona Cards Grid */}
+          <motion.div 
+            className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+          >
+            {personas.map((persona, index) => (
+              <motion.div
+                key={persona.name}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.5 + index * 0.1 }}
+              >
+                <PersonaCard
+                  name={persona.name}
+                  tagline={persona.tagline}
+                  avatar={persona.avatar}
+                  onClick={() => handlePersonaClick(persona.name)}
+                />
+              </motion.div>
+            ))}
+          </motion.div>
+
+          {/* Features */}
+          <motion.div 
+            className="mt-20 text-center"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.8 }}
+          >
+            <div className="grid sm:grid-cols-3 gap-8 max-w-3xl mx-auto">
+              {[
+                { icon: "💬", title: "Interactive Chat", desc: "Real-time conversations with AI personas" },
+                { icon: "🎯", title: "Expert Insights", desc: "Get advice from experienced developers" },
+                { icon: "🌙", title: "Dark Mode", desc: "Beautiful interface that adapts to your preference" }
+              ].map((feature, index) => (
+                <motion.div
+                  key={feature.title}
+                  className="text-center"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 1 + index * 0.1 }}
+                >
+                  <div className="text-3xl mb-3">{feature.icon}</div>
+                  <h3 className="font-semibold text-gray-900 dark:text-white mb-2">
+                    {feature.title}
+                  </h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-300">
+                    {feature.desc}
+                  </p>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        </div>
+      </main>
+
+      {/* Chat Modal */}
+      <ChatModal
+        isOpen={selectedPersona !== null}
+        onClose={handleCloseModal}
+        personaName={selectedPersona || ""}
+        personaAvatar={selectedPersonaData?.avatar}
+      />
+
+      {/* Background Decoration */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-blue-400/20 to-purple-400/20 rounded-full blur-3xl" />
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-orange-400/20 to-pink-400/20 rounded-full blur-3xl" />
+      </div>
+    </div>
+  )
+}
