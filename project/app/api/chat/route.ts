@@ -1,60 +1,46 @@
 import { NextRequest, NextResponse } from 'next/server'
+import fs from 'fs'
+import path from 'path'
+import OpenAI from 'openai'
 
 export const dynamic = 'force-dynamic'
+
+const client = new OpenAI({
+  apiKey: process.env.GEMINI_API_KEY,
+  baseURL: 'https://generativelanguage.googleapis.com/v1beta/openai/'
+})
 
 export async function POST(request: NextRequest) {
   try {
     const { selectedPersona, userMessage } = await request.json()
 
-    // Validate input
     if (!selectedPersona || !userMessage) {
-      return NextResponse.json(
-        { error: 'Missing required fields' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
-    // Simulate AI response based on persona
-    const responses = {
-      'Hitesh Choudhary': [
-        "That's a great question! In my experience with web development and teaching, I've found that...",
-        "Let me share something I've learned from working with thousands of students...",
-        "This is exactly the kind of problem I love solving. Here's how I approach it...",
-        "From my YouTube channel and courses, I often get this question. My advice is...",
-        "As someone who's been in the tech industry for years, I can tell you that...",
-      ],
-      'Piyush Garg': [
-        "Excellent point! In my journey as a developer and educator, I've discovered that...",
-        "This reminds me of a project I worked on recently. The key insight was...",
-        "I'm glad you asked! This is something I cover extensively in my tutorials...",
-        "From my experience building scalable applications, I've learned that...",
-        "That's a common challenge many developers face. Here's my recommended approach...",
+    // Load persona data
+    const personaFilePath = path.join(process.cwd(), 'personas', `${selectedPersona.toLowerCase().split(' ')[0]}.txt`)
+    const personaData = fs.readFileSync(personaFilePath, 'utf-8')
+
+    // Build prompt
+    const systemPrompt = `You are ${selectedPersona}. Use the following background to answer questions in the persona's style:\n\n${personaData}`
+
+    const completion = await client.chat.completions.create({
+      model: "gemini-2.0-flash",
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: userMessage }
       ]
-    }
-
-    // Get random response for the selected persona
-    const personaResponses = responses[selectedPersona as keyof typeof responses] || responses['Hitesh Choudhary']
-    const randomResponse = personaResponses[Math.floor(Math.random() * personaResponses.length)]
-
-    // Add some personalized context to the response
-    const contextualResponse = `${randomResponse} 
-
-Regarding your question about "${userMessage}" - this is a topic I'm passionate about discussing. Would you like me to elaborate on any specific aspect?`
-
-    // Simulate API delay for realistic experience
-    await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 2000))
+    })
 
     return NextResponse.json({
-      message: contextualResponse,
+      message: completion.choices[0].message?.content || "No response.",
       persona: selectedPersona,
       timestamp: new Date().toISOString()
     })
 
   } catch (error) {
     console.error('Chat API Error:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
