@@ -99,36 +99,62 @@ export default function Home() {
           </motion.div>
 
           {/* Features */}
-          <motion.div 
-            className="mt-20 text-center"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.8 }}
-          >
-            <div className="grid sm:grid-cols-3 gap-8 max-w-3xl mx-auto">
-              {[
-                { icon: "💬", title: "Interactive Chat", desc: "Real-time conversations with AI personas" },
-                { icon: "🎯", title: "Expert Insights", desc: "Get advice from experienced developers" },
-                { icon: "🌙", title: "Dark Mode", desc: "Beautiful interface that adapts to your preference" }
-              ].map((feature, index) => (
-                <motion.div
-                  key={feature.title}
-                  className="text-center"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 1 + index * 0.1 }}
-                >
-                  <div className="text-3xl mb-3">{feature.icon}</div>
-                  <h3 className="font-semibold text-gray-900 dark:text-white mb-2">
-                    {feature.title}
-                  </h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-300">
-                    {feature.desc}
-                  </p>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
+{/* Features */}
+<motion.div 
+  className="mt-20 text-center"
+  initial={{ opacity: 0, y: 20 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.6, delay: 0.8 }}
+>
+  <div className="grid sm:grid-cols-3 gap-8 max-w-4xl mx-auto">
+    {[
+      { 
+        icon: "🚀", 
+        title: "Interactive Learning", 
+        desc: "Real-time conversations with AI personas",
+        color: "from-pink-500 to-rose-500"
+      },
+      { 
+        icon: "🎯", 
+        title: "Expert Insights", 
+        desc: "Get advice from experienced developers",
+        color: "from-blue-500 to-cyan-500"
+      },
+      { 
+        icon: "⚡", 
+        title: "24/7 Availability", 
+        desc: "Learn anytime, anywhere at your own pace",
+        color: "from-emerald-500 to-teal-500"
+      }
+    ].map((feature, index) => (
+      <motion.div
+  key={feature.title}
+  className="group relative overflow-hidden bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm border border-white/20 dark:border-gray-700/30 rounded-xl p-4 shadow-md hover:shadow-xl transition-all duration-300"
+  initial={{ opacity: 0, y: 10 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.5, delay: 1 + index * 0.1 }}
+  whileHover={{ 
+    scale: 1.04,
+    y: -4
+  }}
+>
+  <div className={`absolute inset-0 bg-gradient-to-r ${feature.color} opacity-0 group-hover:opacity-10 transition-opacity duration-300`} />
+  <div className="relative z-10">
+    <div className="text-3xl mb-3">{feature.icon}</div>
+    <h4 className="font-semibold text-gray-900 dark:text-white mb-2 text-base">
+      {feature.title}
+    </h4>
+    <p className="text-xs text-gray-600 dark:text-gray-300">
+      {feature.desc}
+    </p>
+  </div>
+</motion.div>
+
+    ))}
+  </div>
+</motion.div>
+
+
         </div>
       </main>
 

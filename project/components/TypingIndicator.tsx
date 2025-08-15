@@ -1,9 +1,12 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
-import { Bot } from "lucide-react"
+import { motion } from "framer-motion";
 
-export default function TypingIndicator() {
+interface TypingIndicatorProps {
+  avatar?: string; // Persona avatar URL
+}
+
+export default function TypingIndicator({ avatar }: TypingIndicatorProps) {
   return (
     <motion.div
       className="flex justify-start mb-4"
@@ -14,8 +17,10 @@ export default function TypingIndicator() {
     >
       <div className="flex items-end space-x-2 max-w-xs">
         {/* Avatar */}
-        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center mr-2">
-          <Bot className="w-4 h-4 text-gray-600 dark:text-gray-300" />
+        <div className="flex-shrink-0 w-8 h-8 rounded-full overflow-hidden bg-gray-200 dark:bg-gray-700 flex items-center justify-center mr-2">
+          {avatar && avatar.trim() !== "" ? (
+            <img src={avatar} alt="avatar" className="w-full h-full object-cover" />
+          ) : null}
         </div>
 
         {/* Typing bubble */}
@@ -40,5 +45,5 @@ export default function TypingIndicator() {
         </div>
       </div>
     </motion.div>
-  )
+  );
 }

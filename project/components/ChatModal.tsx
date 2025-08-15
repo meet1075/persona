@@ -53,59 +53,55 @@ export default function ChatModal({ isOpen, onClose, personaName, personaAvatar 
     }
   }, [isOpen])
 
-  const handleSend = async () => {
-    if (!inputText.trim() || isLoading) return
+const handleSend = async () => {
+    if (!inputText.trim() || isLoading) return;
 
     const userMessage: Message = {
       id: Date.now().toString(),
       text: inputText,
       isUser: true,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-    }
+    };
 
-    setMessages(prev => [...prev, userMessage])
-    setInputText("")
-    setIsLoading(true)
+    setMessages(prev => [...prev, userMessage]);
+    setInputText("");
+    setIsLoading(true);
 
     try {
       const response = await fetch('/api/chat', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           selectedPersona: personaName,
           userMessage: inputText,
         }),
-      })
+      });
 
-      if (!response.ok) {
-        throw new Error('Failed to get response')
-      }
+      if (!response.ok) throw new Error('Failed to get response');
 
-      const data = await response.json()
-      const aiMessageText = data.message?.trim() || "Sorry, I couldn't understand that."
+      const data = await response.json();
+      const aiMessageText = data.message?.trim() || "Sorry, I couldn't understand that.";
 
       const aiMessage: Message = {
         id: (Date.now() + 1).toString(),
         text: aiMessageText,
         isUser: false,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      }
+      };
 
-      setMessages(prev => [...prev, aiMessage])
-    } catch (error) {
+      setMessages(prev => [...prev, aiMessage]);
+    } catch {
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
         text: "Sorry, I'm having trouble responding right now. Please try again.",
         isUser: false,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      }
-      setMessages(prev => [...prev, errorMessage])
+      };
+      setMessages(prev => [...prev, errorMessage]);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -114,7 +110,7 @@ export default function ChatModal({ isOpen, onClose, personaName, personaAvatar 
     }
   }
 
-  return (
+   return (
     <AnimatePresence>
       {isOpen && (
         <>
@@ -140,13 +136,9 @@ export default function ChatModal({ isOpen, onClose, personaName, personaAvatar 
               {/* Header */}
               <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-200/50 dark:border-gray-700/50 bg-white/50 dark:bg-gray-800/50">
                 <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg">
+                  <div className="w-10 h-10 rounded-full overflow-hidden shadow-lg">
                     {personaAvatar ? (
-                      <img 
-                        src={personaAvatar} 
-                        alt={personaName} 
-                        className="w-full h-full rounded-full object-cover"
-                      />
+                      <img src={personaAvatar} alt={personaName} className="w-full h-full object-cover" />
                     ) : (
                       <User className="w-5 h-5 text-white" />
                     )}
@@ -155,9 +147,7 @@ export default function ChatModal({ isOpen, onClose, personaName, personaAvatar 
                     <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
                       {personaName}
                     </h2>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
-                      AI Assistant
-                    </p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">AI Assistant</p>
                   </div>
                 </div>
                 <button
@@ -178,9 +168,11 @@ export default function ChatModal({ isOpen, onClose, personaName, personaAvatar 
                     isUser={message.isUser}
                     timestamp={message.timestamp}
                     isLatest={index === messages.length - 1}
+                    avatar={!message.isUser ? personaAvatar : undefined}
                   />
                 ))}
-                {isLoading && <TypingIndicator />}
+
+                {isLoading && <TypingIndicator avatar={personaAvatar} />}
                 <div ref={messagesEndRef} />
               </div>
 
@@ -195,14 +187,12 @@ export default function ChatModal({ isOpen, onClose, personaName, personaAvatar 
                     onKeyDown={handleKeyDown}
                     placeholder="Type your message..."
                     disabled={isLoading}
-                    className="flex-1 px-4 py-3 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent disabled:opacity-50 transition-all duration-200"
-                    aria-label="Type your message"
+                    className="flex-1 px-4 py-3 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 disabled:opacity-50"
                   />
                   <button
                     onClick={handleSend}
                     disabled={!inputText.trim() || isLoading}
-                    className="p-3 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 disabled:from-gray-300 disabled:to-gray-400 dark:disabled:from-gray-600 dark:disabled:to-gray-700 text-white rounded-xl shadow-lg hover:shadow-xl disabled:shadow-none transition-all duration-200 disabled:cursor-not-allowed"
-                    aria-label="Send message"
+                    className="p-3 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 disabled:opacity-50 text-white rounded-xl"
                   >
                     <Send className="w-5 h-5" />
                   </button>
@@ -213,5 +203,5 @@ export default function ChatModal({ isOpen, onClose, personaName, personaAvatar 
         </>
       )}
     </AnimatePresence>
-  )
+  );
 }
