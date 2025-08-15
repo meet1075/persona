@@ -11,12 +11,12 @@ const personas = [
   {
     name: "Hitesh Choudhary",
     tagline: "Full-stack developer, educator, and YouTube creator. Passionate about teaching web development and making coding accessible to everyone.",
-    avatar: "https://images.pexels.com/photos/3778966/pexels-photo-3778966.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop"
+    avatar: "https://avatars.githubusercontent.com/u/11613311?v=4"
   },
   {
     name: "Piyush Garg",
     tagline: "Software engineer and tech educator. Expert in modern JavaScript, React, Node.js, and building scalable applications.",
-    avatar: "https://images.pexels.com/photos/2379005/pexels-photo-2379005.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop"
+    avatar: "https://www.piyushgarg.dev/_next/image?url=%2Fimages%2Favatar.png&w=1080&q=75"
   }
 ]
 
@@ -48,7 +48,7 @@ export default function Home() {
               <MessageSquare className="w-6 h-6 text-blue-600 dark:text-blue-400" />
             </div>
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
-              Persona Chat
+              ConvoBuddy
             </h1>
           </div>
           <ThemeToggle />
@@ -70,8 +70,7 @@ export default function Home() {
               <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent"> Personas</span>
             </h2>
             <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto leading-relaxed">
-              Engage in meaningful conversations with AI versions of popular tech educators and developers. 
-              Get insights, ask questions, and learn from their expertise.
+              Chat with AI versions of your favorite tech mentors. Ask, explore, and learn from the best in the field—anytime, anywhere.
             </p>
           </motion.div>
 

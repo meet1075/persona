@@ -18,11 +18,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
-    // Load persona data
     const personaFilePath = path.join(process.cwd(), 'personas', `${selectedPersona.toLowerCase().split(' ')[0]}.txt`)
     const personaData = fs.readFileSync(personaFilePath, 'utf-8')
 
-    // Build prompt
     const systemPrompt = `You are ${selectedPersona}. Use the following background to answer questions in the persona's style:\n\n${personaData}`
 
     const completion = await client.chat.completions.create({

@@ -33,7 +33,6 @@ export default function ChatModal({ isOpen, onClose, personaName, personaAvatar 
 
   useEffect(() => {
     if (isOpen) {
-      // Reset chat history and add a new welcome message when the modal opens or persona changes
       const welcomeMessage: Message = {
         id: Date.now().toString(),
         text: `Hello! I'm ${personaName}. How can I help you today?`,
